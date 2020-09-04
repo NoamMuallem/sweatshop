@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { TamplateI } from "../../../types/interfaces";
 import { Image, Button, Modal, Form } from "react-bootstrap";
 
@@ -23,11 +23,9 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
 
   const onDrop = (files: File[]) => {
     if (files[0]) {
-      console.log("picture: ", files);
       setPicture(files[0]);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
-        console.log(typeof reader.result, reader.result);
         setImgData(reader.result!);
       });
       reader.readAsDataURL(files[0]);

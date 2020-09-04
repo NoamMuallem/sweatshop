@@ -5,19 +5,12 @@ import TamplateCollection from "./components/tamplates-gallery/tamplates-collect
 
 export interface AppProps {}
 
-export interface AppState {}
-
-class App extends React.Component<AppProps, AppState> {
-  constructor(props: AppProps) {
-    super(props);
-  }
-  render() {
-    return (
-      <div>
-        <TamplateCollection />
-      </div>
-    );
-  }
-}
+const App: React.SFC<AppProps> = () => {
+  return (
+    <div>
+      <TamplateCollection />
+    </div>
+  );
+};
 
 export default App;

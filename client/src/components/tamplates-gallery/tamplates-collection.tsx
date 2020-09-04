@@ -3,9 +3,7 @@
 //will get throw props what to do when a tamplate was clicked
 
 import * as React from "react";
-import { Component } from "react";
 import { TamplateI } from "../../types/interfaces";
-import { isRegExp } from "util";
 import { connect } from "react-redux";
 import { getTamplates } from "../../redux/actions/tamplates.actions";
 import { createStructuredSelector } from "reselect";
