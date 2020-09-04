@@ -1,5 +1,6 @@
 import { TamplateI } from "../../types/interfaces";
 import tamplatesActionTypes from "../types/tamplates.types";
+
 export interface TamplateReducerState {
   tamplates: { [key: string]: TamplateI };
 }
@@ -21,7 +22,7 @@ export const TamplatesReducer = (
     case tamplatesActionTypes.SET_TAMPLATES:
       let temp = Array(action.payload).reduce(
         (accumulator: { [key: string]: TamplateI }, element: TamplateI) => {
-          return (accumulator[element!._id!] = element);
+          return (accumulator[element._id!] = element);
         },
         {}
       );

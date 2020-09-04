@@ -3,10 +3,9 @@ const mongoose = require("mongoose");
 const tampletSchema = new mongoose.Schema({
   name: {
     type: String,
-    trim: true,
     required: true,
   },
-  imageURL: {
+  imageBuffer: {
     type: String,
     required: true,
   },

@@ -5,7 +5,10 @@
 import * as React from "react";
 import { TamplateI } from "../../types/interfaces";
 import { connect } from "react-redux";
-import { getTamplates } from "../../redux/actions/tamplates.actions";
+import {
+  getTamplates,
+  uploadNewTamplate,
+} from "../../redux/actions/tamplates.actions";
 import { createStructuredSelector } from "reselect";
 import { selectTamplates } from "../../redux/selectores/tamplates.selector";
 import DesktopView from "./tamplates-view/desktop.component";
@@ -14,6 +17,7 @@ import MobileView from "./tamplates-view/mobile.component";
 export interface TamplatesGalleryProps {
   getTamplatesFromServer: () => void;
   tamplates: { [key: string]: TamplateI };
+  newTamplate: (tamplate: TamplateI, image: File) => void;
   // onClick:()=>void;
 }
 
@@ -50,13 +54,18 @@ class TamplatesGallery extends React.Component<
     return !this.state.isMobile ? (
       <MobileView tamplates={this.props.tamplates} />
     ) : (
-      <DesktopView tamplates={this.props.tamplates} />
+      <DesktopView
+        tamplates={this.props.tamplates}
+        addTamplate={this.props.newTamplate}
+      />
     );
   }
 }
 
 const mapDispatchToProps = (dispatch: Function) => ({
   getTamplatesFromServer: () => dispatch(getTamplates()),
+  newTamplate: (tamplate: TamplateI, image: File) =>
+    dispatch(uploadNewTamplate(tamplate, image)),
 });
 
 const mapStateToProps = createStructuredSelector({

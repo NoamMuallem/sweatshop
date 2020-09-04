@@ -1,24 +1,27 @@
 import React, { useState } from "react";
 import { TamplateI } from "../../../types/interfaces";
-import { Image, Button, Modal, Form } from "react-bootstrap";
+import { Image, Button, Modal, Form, Alert } from "react-bootstrap";
 
 export interface DesktopViewProps {
   tamplates: { [key: string]: TamplateI };
+  addTamplate: (tamplate: TamplateI, image: File) => void;
 }
 
 const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
   const [show, setShow] = useState<boolean>(false);
-
   const [name, setName] = useState<string>("");
-
   const [picture, setPicture] = useState<File | null>(null);
   const [imgData, setImgData] = useState<any | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // const [image, setImage] = useState<File>();
 
   // const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setError(null);
+    setShow(false);
+  };
   const handleShow = () => setShow(true);
 
   const onDrop = (files: File[]) => {
@@ -32,10 +35,30 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
     }
   };
 
+  const onSubmit = () => {
+    //construce new tamplate
+    const newTamplate: TamplateI = { name };
+    //verify uniqu name and that ther is an image
+    if (
+      Object.values(props.tamplates).some((tamplate) => {
+        return tamplate.name == newTamplate.name;
+      })
+    ) {
+      setError("כבר יש הדפס עם השם הזה");
+    } else if (!picture) {
+      setError("נא לבחור תמונה קודם");
+    } else {
+      //send new tamplate and close modal
+      props.addTamplate(newTamplate, imgData);
+      handleClose();
+    }
+  };
+
   const modal = () => (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>הוספת הדפס</Modal.Title>
+        {error ? <Alert>{error}</Alert> : null}
       </Modal.Header>
       <Modal.Body>
         <h5>שם ההדפס</h5>
@@ -68,10 +91,7 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
         ) : null}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleClose}>
+        <Button variant="primary" onClick={() => onSubmit()}>
           Save Changes
         </Button>
       </Modal.Footer>
@@ -82,7 +102,9 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
     <div>
       {/*in case there are no tamplates*/}
       {Object.keys(props.tamplates).length === 0 ? (
-        <p>אין כרגע הדפסים במערכת</p>
+        <Button variant="primary" onClick={handleShow}>
+          Launch demo modal
+        </Button>
       ) : (
         <div>
           ההדפסים שלי
@@ -90,14 +112,16 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
             Launch demo modal
           </Button>
           <p>
-            {Object.values(props.tamplates).map((value) => (
-              <Image
-                key={value._id}
-                style={{ width: "250px", height: "250px" }}
-                src={value.imageURL}
-                rounded
-              />
-            ))}
+            {Object.values(props.tamplates).map((value) => {
+              return (
+                <Image
+                  key={value._id}
+                  style={{ width: "250px", height: "250px" }}
+                  src={value.imageBuffer!.toString()}
+                  rounded
+                />
+              );
+            })}
           </p>
         </div>
       )}
