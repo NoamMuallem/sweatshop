@@ -14,6 +14,7 @@ const INITIAL_STATE = {
   tamplates: {},
 };
 
+//TODO:convert here toString() the buffer from server
 export const TamplatesReducer = (
   state: TamplateReducerState = INITIAL_STATE,
   action: any

@@ -42,6 +42,33 @@ router.post("/tamplats", upload.any(), async (req, res, next) => {
   }
 });
 
+/**
+route: api/inventory/tamplats
+methos: post
+access: private
+desc: add new tamplate
+*/
+//TODO:make private routs
+router.patch("/tamplats", upload.any(), async (req, res, next) => {
+  const data = JSON.parse(req.body.data);
+  console.log(data);
+  try {
+    let tamplate = await Tamplate.findById(data._id);
+    if (!tamplate) {
+      throw new Error("לא ניתן למצוא הדפס עם id של: " + data);
+    }
+    Object.keys(data).forEach((key) => {
+      key != "_id" ? (tamplate[key] = data[key]) : null;
+    });
+    (tamplate["imageBuffer"] = req.body.image),
+      (tamplate = await tamplate.save());
+    res.status(201).send(tamplate);
+  } catch (e) {
+    console.log(e);
+    res.status(400).send(e);
+  }
+});
+
 /////////////////public routes
 
 /**
