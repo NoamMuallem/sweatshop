@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment } from "react";
 import mergeImages from "merge-images-v2";
 import background from "../../../assets/images/black_background.jpg";
 

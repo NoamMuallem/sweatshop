@@ -53,6 +53,14 @@ export const TamplatesReducer = (
         tamplates: coppyTamplates,
       };
 
+    case tamplatesActionTypes.DELETE_TAMPLATE:
+      let tamplateCoppyDelete = state.tamplates;
+      delete tamplateCoppyDelete[action.payload];
+      return {
+        ...state,
+        tamplates: tamplateCoppyDelete,
+      };
+
     default:
       return state;
   }

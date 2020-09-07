@@ -51,7 +51,6 @@ desc: add new tamplate
 //TODO:make private routs
 router.patch("/tamplats", upload.any(), async (req, res, next) => {
   const data = JSON.parse(req.body.data);
-  console.log(data);
   try {
     let tamplate = await Tamplate.findById(data._id);
     if (!tamplate) {
@@ -64,8 +63,26 @@ router.patch("/tamplats", upload.any(), async (req, res, next) => {
       (tamplate = await tamplate.save());
     res.status(201).send(tamplate);
   } catch (e) {
-    console.log(e);
     res.status(400).send(e);
+  }
+});
+
+/**
+route: api/inventory/tamplats
+methos: delete
+access: private
+desc: delete an item tamplate
+*/
+router.delete("/tamplats/:id", async (req, res) => {
+  try {
+    let tamplate = await Tamplate.findById(req.params.id);
+    if (!tamplate) {
+      throw new Error("הדפס עם מספר מזהה מבוקש, לא נמצא");
+    }
+    await Tamplate.deleteOne({ _id: tamplate._id });
+    res.status(204).send(req.params.id);
+  } catch (e) {
+    res.status(500).send(e);
   }
 });
 

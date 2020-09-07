@@ -8,6 +8,7 @@ export interface DesktopViewProps {
   tamplates: { [key: string]: TamplateI };
   addTamplate?: (tamplate: TamplateI, image: File) => void;
   update?: (tamplate: TamplateI, image: File) => void;
+  delete?: (tamplate: TamplateI) => void;
 }
 
 const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
@@ -21,7 +22,6 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
   });
 
   useEffect(() => {
-    console.log("in useEffect, got from props: ", props.tamplates);
     setTamplates({ ...props.tamplates });
   }, [props.tamplates]);
 
@@ -68,11 +68,12 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
     if (newTamplate._id) {
       props.update!(newTamplate, imgData);
       flushForm();
+      handleClose();
     } else {
       //new tamplate verify uniqu name and that ther is an image
       if (
         Object.values(tamplates).some((tamplate) => {
-          return tamplate.name == newTamplate.name;
+          return tamplate.name === newTamplate.name;
         })
       ) {
         setError("כבר יש הדפס עם השם הזה");
@@ -82,9 +83,9 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
         //send new tamplate and close modal
         props.addTamplate!(newTamplate, imgData);
         flushForm();
+        handleClose();
       }
     }
-    handleClose();
   };
 
   const modal = () => (
@@ -178,29 +179,38 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
           >
             {Object.values(tamplates).map((value) => {
               return (
-                <div
-                  style={{
-                    width: "fit-content",
-                    height: "fit-content",
-                    margin: "0.5rem",
-                    borderRadius: "2.725rem",
-                  }}
-                  key={value._id!}
-                  onClick={
-                    //if admin give update option
-                    props.update
-                      ? () => {
-                          //set old tamplate data in state
-                          set_id(value._id!);
-                          setName(value.name);
-                          setImgData(value.imageBuffer!.toString());
-                          handleShow();
-                        }
-                      : undefined
-                  }
-                >
-                  <TamplateMash imageBuffer={value.imageBuffer!.toString()} />
-                  <p>{value.name}</p>
+                <div key={value._id!}>
+                  <div
+                    style={{
+                      width: "fit-content",
+                      height: "fit-content",
+                      margin: "0.5rem",
+                      borderRadius: "2.725rem",
+                    }}
+                    onClick={
+                      //if admin give update option
+                      props.update
+                        ? () => {
+                            //set old tamplate data in state
+                            set_id(value._id!);
+                            setName(value.name);
+                            setImgData(value.imageBuffer!.toString());
+                            handleShow();
+                          }
+                        : undefined
+                    }
+                  >
+                    <TamplateMash imageBuffer={value.imageBuffer!.toString()} />
+                    <p>{value.name}</p>
+                  </div>
+                  {props.delete ? (
+                    <Button
+                      variant="outline-danger"
+                      onClick={() => props.delete!(value)}
+                    >
+                      מחק
+                    </Button>
+                  ) : null}
                 </div>
               );
             })}

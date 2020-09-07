@@ -11,8 +11,6 @@ export const getTamplates = () => (dispatch: Function) => {
   });
 };
 
-//TODO:when successfully deleting a tamplate just update local
-//stet to reflact changes on server
 export const uploadNewTamplate = (tamplate: TamplateI, image: File) => (
   dispatch: Function
 ) => {
@@ -62,4 +60,16 @@ export const updateTamplate = (tamplate: TamplateI, image: File) => (
       });
     })
     .catch((error) => console.log(error));
+};
+
+export const deleteTamplate = (tamplate: TamplateI) => (dispatch: Function) => {
+  axios
+    .delete(`api/inventory/tamplats/${tamplate._id!}`)
+    .then((res) => {
+      dispatch({
+        type: tamplateACtionTypes.DELETE_TAMPLATE,
+        payload: tamplate["_id"],
+      });
+    })
+    .catch((e) => console.log(e));
 };
