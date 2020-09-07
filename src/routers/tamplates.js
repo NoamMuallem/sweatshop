@@ -3,6 +3,7 @@ const Tamplate = require("../models/tamplets");
 const express = require("express");
 const router = new express.Router();
 const multer = require("multer");
+const auth = require("../middleware/auth");
 const upload = multer({
   //dest: "avatars" - if not set, will pass the data throw so we can use it in the rout itself and save it to user
   limits: {
@@ -26,8 +27,7 @@ methos: post
 access: private
 desc: add new tamplate
 */
-//TODO:make private routs
-router.post("/tamplats", upload.any(), async (req, res, next) => {
+router.post("/tamplats", auth, upload.any(), async (req, res, next) => {
   const data = JSON.parse(req.body.data);
 
   try {
@@ -48,8 +48,7 @@ methos: post
 access: private
 desc: add new tamplate
 */
-//TODO:make private routs
-router.patch("/tamplats", upload.any(), async (req, res, next) => {
+router.patch("/tamplats", auth, upload.any(), async (req, res, next) => {
   const data = JSON.parse(req.body.data);
   try {
     let tamplate = await Tamplate.findById(data._id);
@@ -73,7 +72,7 @@ methos: delete
 access: private
 desc: delete an item tamplate
 */
-router.delete("/tamplats/:id", async (req, res) => {
+router.delete("/tamplats/:id", auth, async (req, res) => {
   try {
     let tamplate = await Tamplate.findById(req.params.id);
     if (!tamplate) {

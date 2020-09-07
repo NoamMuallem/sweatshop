@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Component } from "react";
 
 export interface DashBoardProps {
   // loadInventory:()=>void;
@@ -9,12 +8,8 @@ export interface DashBoardProps {
 export interface DashBoardState {}
 
 class DashBoard extends React.Component<DashBoardProps, DashBoardState> {
-  constructor(props: DashBoardProps) {
-    super(props);
-    // this.state = { :  };
-  }
   render() {
-    return <div>test</div>;
+    return <div>this is dash board</div>;
   }
 }
 

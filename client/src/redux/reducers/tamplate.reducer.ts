@@ -13,7 +13,8 @@ interface Action {
 const INITIAL_STATE = {
   tamplates: {},
 };
-
+//TODO:try maybe save data to storage and get it from storage,
+// if fail to get send a get request
 //TODO:convert here toString() the buffer from server
 export const TamplatesReducer = (
   state: TamplateReducerState = INITIAL_STATE,

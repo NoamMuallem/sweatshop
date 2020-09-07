@@ -15,6 +15,7 @@ import { createStructuredSelector } from "reselect";
 import { selectTamplates } from "../../redux/selectores/tamplates.selector";
 import DesktopView from "./tamplates-view/desktop.component";
 import MobileView from "./tamplates-view/mobile.component";
+import { selectToken } from "../../redux/selectores/auth.selector";
 
 export interface TamplatesGalleryProps {
   getTamplatesFromServer: () => void;
@@ -22,6 +23,7 @@ export interface TamplatesGalleryProps {
   newTamplate: (tamplate: TamplateI, image: File) => void;
   updateTamp: (tamplate: TamplateI, image: File) => void;
   delete: (tamplate: TamplateI) => void;
+  token: string | null;
 }
 
 export interface TamplatesGalleryState {
@@ -38,7 +40,9 @@ class TamplatesGallery extends React.Component<
   }
 
   componentDidMount = () => {
-    this.props.getTamplatesFromServer();
+    if (Object.keys(this.props.tamplates).length === 0) {
+      this.props.getTamplatesFromServer();
+    }
   };
 
   render() {
@@ -59,9 +63,13 @@ class TamplatesGallery extends React.Component<
     ) : (
       <DesktopView
         tamplates={this.props.tamplates}
-        addTamplate={this.props.newTamplate}
-        update={this.props.updateTamp}
-        delete={this.props.delete}
+        {...(this.props.token
+          ? {
+              addTamplate: this.props.newTamplate,
+              update: this.props.updateTamp,
+              delete: this.props.delete,
+            }
+          : {})}
       />
     );
   }
@@ -78,6 +86,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
 
 const mapStateToProps = createStructuredSelector({
   tamplates: selectTamplates,
+  token: selectToken,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TamplatesGallery);

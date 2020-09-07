@@ -1,18 +1,23 @@
 import tamplateACtionTypes from "../types/tamplates.types";
 import axios from "axios";
 import { TamplateI } from "../../types/interfaces";
+import { setLoading, stopLoading } from "../actions/ui.actions";
+import { tokenConfig } from "../actions/auth.actions";
 
 export const getTamplates = () => (dispatch: Function) => {
+  dispatch(setLoading());
   axios.get("api/inventory/tamplats").then((res) => {
     dispatch({
       type: tamplateACtionTypes.SET_TAMPLATES,
       payload: res.data,
     });
+    dispatch(stopLoading());
   });
 };
 
 export const uploadNewTamplate = (tamplate: TamplateI, image: File) => (
-  dispatch: Function
+  dispatch: Function,
+  getState: Function
 ) => {
   delete tamplate.imageUrl;
   let formData = new FormData();
@@ -21,23 +26,21 @@ export const uploadNewTamplate = (tamplate: TamplateI, image: File) => (
     ...tamplate,
   };
   formData.append("data", JSON.stringify(data));
-  const headers = {
-    "Content-Type": undefined,
-  };
+  dispatch(setLoading());
   axios
-    .post("api/inventory/tamplats", formData, {
-      headers: headers,
-    })
-    .then((res) =>
+    .post("api/inventory/tamplats", formData, tokenConfig(getState))
+    .then((res) => {
       dispatch({
         type: tamplateACtionTypes.ADD_NEW_TAMPLATE,
         payload: res.data,
-      })
-    );
+      });
+      dispatch(stopLoading());
+    });
 };
 
 export const updateTamplate = (tamplate: TamplateI, image: File) => (
-  dispatch: Function
+  dispatch: Function,
+  getState: Function
 ) => {
   delete tamplate.imageUrl;
   let formData = new FormData();
@@ -46,30 +49,32 @@ export const updateTamplate = (tamplate: TamplateI, image: File) => (
     ...tamplate,
   };
   formData.append("data", JSON.stringify(data));
-  const headers = {
-    "Content-Type": undefined,
-  };
+  dispatch(setLoading());
   axios
-    .patch("api/inventory/tamplats", formData, {
-      headers: headers,
-    })
+    .patch("api/inventory/tamplats", formData, tokenConfig(getState))
     .then((res) => {
       dispatch({
         type: tamplateACtionTypes.UPDATE_TAMPLATE,
         payload: res.data,
       });
+      dispatch(stopLoading());
     })
     .catch((error) => console.log(error));
 };
 
-export const deleteTamplate = (tamplate: TamplateI) => (dispatch: Function) => {
+export const deleteTamplate = (tamplate: TamplateI) => (
+  dispatch: Function,
+  getState: Function
+) => {
+  dispatch(setLoading());
   axios
-    .delete(`api/inventory/tamplats/${tamplate._id!}`)
+    .delete(`api/inventory/tamplats/${tamplate._id!}`, tokenConfig(getState))
     .then((res) => {
       dispatch({
         type: tamplateACtionTypes.DELETE_TAMPLATE,
         payload: tamplate["_id"],
       });
+      dispatch(stopLoading());
     })
     .catch((e) => console.log(e));
 };

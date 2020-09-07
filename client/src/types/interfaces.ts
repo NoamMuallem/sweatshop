@@ -4,3 +4,9 @@ export interface TamplateI {
   name: string;
   imageUrl?: string;
 }
+
+export interface UserI {
+  email: string;
+  isAuthenticated: boolean;
+  token: string | null;
+}
