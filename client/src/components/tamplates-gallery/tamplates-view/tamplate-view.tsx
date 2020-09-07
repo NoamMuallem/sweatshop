@@ -3,7 +3,7 @@ import mergeImages from "merge-images-v2";
 import background from "../../../assets/images/black_background.jpg";
 
 export interface TamplateMashProps {
-  imageBuffer: string;
+  imageBuffer: string | undefined;
 }
 
 export interface TamplateMashState {

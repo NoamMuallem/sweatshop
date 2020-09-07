@@ -5,5 +5,5 @@ export const tamplates = (state: any) => state.tamplates;
 
 export const selectTamplates = createSelector(
   [tamplates],
-  (state: TamplateReducerState) => state.tamplates
+  (state: TamplateReducerState) => ({ ...state.tamplates })
 );

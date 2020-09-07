@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TamplateI } from "../../../types/interfaces";
 import { Button, Modal, Form, Alert } from "react-bootstrap";
 import TamplateMash from "./tamplate-view";
@@ -16,6 +16,14 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
   const [name, setName] = useState<string>("");
   const [imgData, setImgData] = useState<any | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
+  const [tamplates, setTamplates] = useState<{ [key: string]: TamplateI }>({
+    ...props.tamplates,
+  });
+
+  useEffect(() => {
+    console.log("in useEffect, got from props: ", props.tamplates);
+    setTamplates({ ...props.tamplates });
+  }, [props.tamplates]);
 
   const handleClose = () => {
     setError(null);
@@ -42,7 +50,6 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
             setImgData(reader.result!);
           });
           reader.readAsDataURL(file);
-          console.log(file);
         });
     }
   };
@@ -64,7 +71,7 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
     } else {
       //new tamplate verify uniqu name and that ther is an image
       if (
-        Object.values(props.tamplates).some((tamplate) => {
+        Object.values(tamplates).some((tamplate) => {
           return tamplate.name == newTamplate.name;
         })
       ) {
@@ -135,15 +142,21 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
         justifyContent: "center",
       }}
     >
+      <p style={{ margin: "auto", fontSize: "8rem", marginBottom: "1rem" }}>
+        ההדפסים שלי
+      </p>
+      {/* for regular costumers, adding removing and updating templates is not an option */}
+      {props.addTamplate ? (
+        <Button
+          variant="primary"
+          style={{ margin: "auto" }}
+          onClick={handleShow}
+        >
+          הוספת הדפס חדש
+        </Button>
+      ) : null}
       {/*in case there are no tamplates*/}
-      {Object.keys(props.tamplates).length === 0 ? (
-        //for regular costumers, adding removing and updating templates is not an option
-        props.addTamplate ? (
-          <Button variant="primary" onClick={handleShow}>
-            הוספת הדפס חדש
-          </Button>
-        ) : null
-      ) : (
+      {Object.keys(tamplates).length > 0 ? (
         <div
           style={{
             margin: "auto",
@@ -154,19 +167,6 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
             justifyContent: "center",
           }}
         >
-          <p style={{ margin: "auto" }}>ההדפסים שלי</p>
-          {
-            ////for regular costumers, adding removing and updating templates is not an option
-            props.addTamplate ? (
-              <Button
-                style={{ margin: "auto" }}
-                variant="primary"
-                onClick={handleShow}
-              >
-                הוספת הדפס חדש
-              </Button>
-            ) : null
-          }
           <div
             style={{
               margin: "auto",
@@ -176,7 +176,7 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
               flexWrap: "wrap",
             }}
           >
-            {Object.values(props.tamplates).map((value) => {
+            {Object.values(tamplates).map((value) => {
               return (
                 <div
                   style={{
@@ -200,12 +200,14 @@ const DesktopView: React.SFC<DesktopViewProps> = (props: DesktopViewProps) => {
                   }
                 >
                   <TamplateMash imageBuffer={value.imageBuffer!.toString()} />
+                  <p>{value.name}</p>
                 </div>
               );
             })}
-            ;
           </div>
         </div>
+      ) : (
+        <p style={{ margin: "auto" }}>אין הדפסים כרגע במערכת</p>
       )}
       {modal()}
       min width lower then 800

@@ -27,9 +27,30 @@ export const TamplatesReducer = (
         },
         {}
       );
+      let result: { [key: string]: TamplateI } = {};
+      for (let i = 0; i < temp.length; i++) {
+        result[temp[i]._id!] = temp[i];
+      }
       return {
         ...state,
-        tamplates: temp,
+        tamplates: result,
+      };
+
+    case tamplatesActionTypes.ADD_NEW_TAMPLATE:
+      let tamplateCoppy = state.tamplates;
+      tamplateCoppy[action.payload._id!] = action.payload;
+      return {
+        ...state,
+        tamplates: tamplateCoppy,
+      };
+
+    case tamplatesActionTypes.UPDATE_TAMPLATE:
+      let tamplate = state.tamplates[action.payload._id!];
+      let coppyTamplates = state.tamplates;
+      coppyTamplates[tamplate._id!] = action.payload;
+      return {
+        ...state,
+        tamplates: coppyTamplates,
       };
 
     default:

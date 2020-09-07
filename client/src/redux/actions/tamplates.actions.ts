@@ -11,7 +11,7 @@ export const getTamplates = () => (dispatch: Function) => {
   });
 };
 
-//TODO:when successfully updating/ adding/ deleting a tamplate just update local
+//TODO:when successfully deleting a tamplate just update local
 //stet to reflact changes on server
 export const uploadNewTamplate = (tamplate: TamplateI, image: File) => (
   dispatch: Function
@@ -30,7 +30,12 @@ export const uploadNewTamplate = (tamplate: TamplateI, image: File) => (
     .post("api/inventory/tamplats", formData, {
       headers: headers,
     })
-    .then((res) => console.log(res.data));
+    .then((res) =>
+      dispatch({
+        type: tamplateACtionTypes.ADD_NEW_TAMPLATE,
+        payload: res.data,
+      })
+    );
 };
 
 export const updateTamplate = (tamplate: TamplateI, image: File) => (
@@ -50,6 +55,11 @@ export const updateTamplate = (tamplate: TamplateI, image: File) => (
     .patch("api/inventory/tamplats", formData, {
       headers: headers,
     })
-    .then((res) => console.log("got back: " + res.data))
+    .then((res) => {
+      dispatch({
+        type: tamplateACtionTypes.UPDATE_TAMPLATE,
+        payload: res.data,
+      });
+    })
     .catch((error) => console.log(error));
 };
